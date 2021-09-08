@@ -92,6 +92,10 @@ class Question
     def followers
         QuestionFollow.followers_for_question_id(self.id)
     end
+
+    def self.most_followed(n)
+        QuestionFollow.most_followed_questions(n)
+    end
 end #end questions
 
 class Reply
@@ -208,6 +212,31 @@ class QuestionFollow
         data.map{|datum| Question.new(datum)}
     end
 
+    def self.most_followed_questions(n)
+        data = QuestionsDatabase.instance.execute(<<-SQL, n: n)
+        SELECT
+            questions.id,
+            questions.title,
+            questions.body,
+            questions.user_id
+        FROM
+            question_follows
+        JOIN
+            users
+            ON users.id = question_follows.user_id
+        JOIN
+            questions
+            ON questions.id = question_follows.question_id
+        GROUP BY
+            users.id
+        ORDER BY
+            COUNT(users.id) ASC
+        LIMIT
+            :n
+        SQL
+        data.map{|datum| Question.new(datum)}
+    end
+
 end #end QuestionFollows.class
 
 class QuestionLike
@@ -227,4 +256,23 @@ class QuestionLike
         QuestionLike.new(data[0])
     end
 
+    def self.likers_for_question_id(question_id)
+        data = QuestionsDatabase.instance.execute(<<-SQL, question_id: question_id)
+        SELECT
+            users.id,
+            users.fname,
+            users.lname
+        FROM
+            users
+        JOIN
+            question_likes
+            ON users.id = question_likes.user_id
+        JOIN
+            questions
+            ON question_likes.question_id = questions.id
+        WHERE
+            questions.id = :question_id
+        SQL
+        data.map{|datum| User.new(datum)}
+    end
 end #end QuestionLike
