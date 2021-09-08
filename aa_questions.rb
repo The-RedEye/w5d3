@@ -32,7 +32,14 @@ class User
     end
 
     def self.find_by_name(fname, lname)
-        data = QuestionsDatabase.instance.execute("SELECT * FROM users WHERE fname = #{fname} AND lname = #{lname} ")
+        data = QuestionsDatabase.instance.execute(<<-SQL, fname: fname, lname: lname)
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            users.fname = :fname AND users.lname = :lname;
+        SQL
         data.map { |datum| User.new(datum) }
     end
 end # End User Class
