@@ -186,8 +186,6 @@ class Reply
         data.map{|datum| Reply.new(datum)}
     end
 
-
-
 end # end Reply Class
 
 class QuestionFollow
