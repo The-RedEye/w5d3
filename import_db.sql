@@ -69,7 +69,8 @@ INSERT INTO
   questions(title, body, user_id)
 VALUES
   ('Break Time?', 'How long until break?', 1),
-  ('When is the weekend', 'How long until the weekend', 2);
+  ('When is the weekend', 'How long until the weekend', 2),
+  ('Time', 'Does anybody know what time it is?', 1);
 
 INSERT INTO
   question_follows(question_id, user_id)
@@ -88,4 +89,5 @@ INSERT INTO
   question_likes(user_id, question_id)
 VALUES
  (2,1),
- (1,2);
+ (1,2),
+ (2,2);
