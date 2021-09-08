@@ -50,9 +50,15 @@ class User
     def authored_replies
         Reply.find_by_user_id(self.id)
     end
+
+    def followed_questions
+        QuestionFollow.followed_questions_for_user_id(self.id)
+    end
 end # End User Class
 
-class Question 
+class Question
+
+    attr_accessor :id
     def self.all
         data = QuestionsDatabase.instance.execute("SELECT * FROM questions")
         data.map{|datum| Question.new(datum)}
@@ -81,6 +87,10 @@ class Question
 
     def replies
         Reply.find_by_question_id(@id)
+    end
+
+    def followers
+        QuestionFollow.followers_for_question_id(self.id)
     end
 end #end questions
 
